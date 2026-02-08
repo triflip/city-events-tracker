@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div>
       <h1>Dashboard Home</h1>
-      <p>Mira la consola per veure els events carregats de Supabase.</p>
+      <p></p>
     </div>
   )
 }
