@@ -1,19 +1,32 @@
-import { useEffect } from "react";  
-import { supabase } from "../lib/supabaseClient";
+import { useEffect, useState } from "react"
+import { supabase } from "../lib/supabaseClient"
 
 export function useLoadEvents() {
-    useEffect(() => {
-        async function fetchEvents() {
-            const { data, error } = await supabase
-            .from("events")
-            .select("*")
-            .order("created_at", { ascending: false })
+  const [events, setEvents] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-            console.log("Supabase events → data:", data)
-            console.log("Supabase events → error:", error)
-            
-        }
+  useEffect(() => {
+    async function fetchEvents() {
+      try {
+        const { data, error } = await supabase
+          .from("events")
+          .select("*")
+          .order("created_at", { ascending: false })
 
-        fetchEvents()
-    }, [] )
+        if (error) throw error
+
+        setEvents(data)
+      } catch (err) {
+        console.log("SUPABASE ERROR:", err)
+        setError(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchEvents()
+  }, [])
+
+  return { events, loading, error }
 }
