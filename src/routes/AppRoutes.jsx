@@ -4,6 +4,7 @@ import Home from "../pages/Home";
 import EventList from "../pages/Events/EventList";
 import EventCreate from "../pages/Events/EventCreate";
 import EventEdit from "../pages/Events/EventEdit";
+import MapPage from "../pages/Map";
 
 
 
@@ -18,6 +19,7 @@ export function AppRoutes() {
           <Route path="/events" element={<EventList />} />
           <Route path="/events/create" element={<EventCreate />} />
           <Route path="/events/:id/edit" element={<EventEdit />} />
+          <Route path="/map" element={<MapPage />} />
 
         </Route>
 
