@@ -1,84 +1,40 @@
+@import "tailwindcss";
+
+/* 1. CONFIGURACIÓ GLOBAL */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: system-ui, sans-serif;
   line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
+/* Eliminem els estils agressius de Vite per evitar conflictes */
 body {
   margin: 0;
-  min-width: 320px;
+  background-color: #f3f4f6; /* bg-gray-100 */
+  color: #111827; /* text-gray-900 */
   min-height: 100vh;
-  display: block; /* ← important */
-}
-
-
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
 }
 
 html, body, #root {
   height: 100%;
 }
 
-/* FIX CRÍTIC PER LEAFLET + TAILWIND */
+/* 2. FIX PER A LEAFLET (Necessari perquè el mapa es vegi) */
 .leaflet-container {
   width: 100% !important;
   height: 100% !important;
   position: relative !important;
+  z-index: 1;
 }
 
+/* 3. RESET DE BOTONS (Opcional, perquè Vite no els faci lletjos) */
+button {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mantenim el teu fix de Leaflet per si les rajoles es mouen */
 .leaflet-pane,
 .leaflet-tile,
 .leaflet-marker-icon,

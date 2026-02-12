@@ -8,8 +8,9 @@ export default function EventCreate() {
   const [searchParams] = useSearchParams();
   const lat = searchParams.get("lat");
   const lng = searchParams.get("lng");
-
+  
   const [errorMsg, setErrorMsg] =useState("");
+  const [imageFile, setImageFile] = useState(null);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -35,7 +36,7 @@ export default function EventCreate() {
     `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
     {
       headers: {
-        "User-Agent": "city-events-tracker/1.0", // Nominatim ho demana
+        "User-Agent": "city-events-tracker/1.0", 
       },
     }
   );
@@ -88,7 +89,32 @@ async function handleSubmit(e) {
     } 
     setErrorMsg("");
 
-  // 2. Guardar a Supabase, incloent city
+    let imageUrl = null;
+
+if (imageFile) {
+  const fileExt = imageFile.name.split(".").pop();
+  const fileName = `${crypto.randomUUID()}.${fileExt}`;
+  const filePath = `${fileName}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("event-images") // nom del bucket
+    .upload(filePath, imageFile);
+
+  if (uploadError) {
+    console.error("Error pujant imatge:", uploadError);
+    // pots fer setErrorMsg si vols
+  } else {
+    const { data: publicUrlData } = supabase.storage
+      .from("event-images")
+      .getPublicUrl(filePath);
+
+    imageUrl = publicUrlData.publicUrl;
+  }
+}
+
+
+
+  // 2. Guardar a Supabase
   const { data, error } = await supabase
     .from("events")
     .insert({
@@ -99,6 +125,7 @@ async function handleSubmit(e) {
       lat: formData.lat,
       lng: formData.lng,
       location: location, 
+      image_url: imageUrl 
     })
     .select();
 
@@ -154,6 +181,13 @@ async function handleSubmit(e) {
           <option value="festa">Festa popular</option>
           <option value="gastronomia">Gastronomia</option>
         </select>
+
+        <input 
+        type="file"
+        accept="image/*"
+        onChange={(e) => setImageFile(e.target.files[0] || null)}
+        className="border p-2 rounded"
+        />
 
         {errorMsg && (
   <p className="text-red-600 font-medium">{errorMsg}</p>
