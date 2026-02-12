@@ -51,7 +51,6 @@ export default function MapPage() {
   useEffect(() => {
     if (markerRef.current) {
       const timer = setTimeout(() => {
-        // Comprovem que encara existeixi el marcador (per seguretat)
         if (markerRef.current) {
           markerRef.current.openPopup();
         }
@@ -59,7 +58,6 @@ export default function MapPage() {
 
       return () => clearTimeout(timer);
     }
-    // Afegim markerRef a la llista de dependències
   }, [position, markerRef]); 
 
   return <Popup>{children}</Popup>;

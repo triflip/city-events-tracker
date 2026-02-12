@@ -1,4 +1,4 @@
-import Button from "./ui/Button"
+import Button from "./ui/Button";
 
 export default function EventCard({ event }) {
   return (
@@ -13,10 +13,9 @@ export default function EventCard({ event }) {
         )}
 
         <p className="text-sm text-gray-500 mt-1">
-          {new Date(event.date).toLocaleDateString("ca-ES", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
+          {new Date(event.date).toLocaleString("ca-ES", {
+            dateStyle: "long",
+            timeStyle: "short",
           })}
         </p>
       </div>
@@ -31,5 +30,5 @@ export default function EventCard({ event }) {
         </Button>
       </div>
     </div>
-  )
+  );
 }
