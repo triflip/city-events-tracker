@@ -1,6 +1,31 @@
+import { supabase } from "../lib/supabaseClient";
 import Button from "./ui/Button";
 
-export default function EventCard({ event }) {
+export default function EventCard({ event, onDelete }) {
+
+async function handleDelete() {
+  const confirmDelete = window.confirm("Segur que vols eliminar aquest esdeveniment?");
+  if (!confirmDelete) return;
+
+  const { error } = await supabase
+    .from("events")
+    .delete()
+    .eq("id", event.id);
+
+    console.log("DELETE ERROR:", error);
+    console.log("ID QUE ENVIO A DELETE:", event.id);
+
+
+  if (error) {
+    console.error("Error eliminant:", error);
+    return;
+  }
+
+  onDelete(event.id);
+}
+
+
+
   return (
     <div className="p-4 bg-white shadow rounded hover:shadow-lg transition flex flex-col justify-between">
       <div>
@@ -8,8 +33,11 @@ export default function EventCard({ event }) {
 
         <p className="text-gray-600 mt-1">{event.description}</p>
 
-        {event.city && (
-          <p className="text-sm text-gray-500 mt-2">{event.city}</p>
+        {event.location&& (
+          <p className="text-sm text-gray-500 mt-2 whitespace-pre-line">
+  {event.location}
+</p>
+
         )}
 
         <p className="text-sm text-gray-500 mt-1">
@@ -25,7 +53,7 @@ export default function EventCard({ event }) {
           Edit
         </Button>
 
-        <Button variant="danger" size="sm">
+        <Button variant="danger" size="sm" onClick={handleDelete}>
           Delete
         </Button>
       </div>

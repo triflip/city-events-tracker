@@ -28,5 +28,5 @@ export function useLoadEvents() {
     fetchEvents()
   }, [])
 
-  return { events, loading, error }
+  return { events, setEvents,  loading, error }
 }

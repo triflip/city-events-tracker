@@ -9,6 +9,8 @@ export default function EventCreate() {
   const lat = searchParams.get("lat");
   const lng = searchParams.get("lng");
 
+  const [errorMsg, setErrorMsg] =useState("");
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -28,25 +30,86 @@ export default function EventCreate() {
 
   console.log("FORM DATA:", formData);
 
+  async function getLocationName(lat, lng) {
+  const res = await fetch(
+    `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
+    {
+      headers: {
+        "User-Agent": "city-events-tracker/1.0", // Nominatim ho demana
+      },
+    }
+  );
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-
-    const { data, error } = await supabase.from("events").insert({
-  title: formData.title,
-  description: formData.description,
-  category: formData.category,
-  date: formData.date,
-  lat: formData.lat,
-  lng: formData.lng,
-}).select();
-
-console.log("DATA:", data);
-console.log("ERROR:", error);
-
-
-    navigate("/events");
+  if (!res.ok) {
+    console.error("Error obtenint lloc:", res.statusText);
+    return null;
   }
+
+  const data = await res.json();
+  const addr = data.address;
+
+  const street = addr.road || "";
+  const number = addr.house_number || "";
+  const city = addr.city || addr.town;
+  const state = addr.state || "";
+
+  const shortAddress = `${street}, ${number}\n${city}, ${state}`;
+
+
+  return shortAddress;
+}
+
+
+async function handleSubmit(e) {
+  e.preventDefault();
+
+  let location = null;
+  if (formData.lat && formData.lng) {
+    location = await getLocationName(formData.lat, formData.lng);
+  }
+  if (!formData.title.trim()) { 
+    setErrorMsg("El títol és obligatori"); 
+    return; 
+  } 
+  if (!formData.description.trim()) { 
+    setErrorMsg("La descripció és obligatòria"); 
+    return; 
+  }
+  if (!formData.category) { 
+    setErrorMsg("Has de seleccionar una categoria"); 
+    return; 
+   }
+   if (!formData.date) { 
+    setErrorMsg("Has d'indicar una data i hora"); 
+    return; 
+    } if (!formData.lat || !formData.lng) { 
+    setErrorMsg("Has de seleccionar una ubicació al mapa"); 
+    return; 
+    } 
+    setErrorMsg("");
+
+  // 2. Guardar a Supabase, incloent city
+  const { data, error } = await supabase
+    .from("events")
+    .insert({
+      title: formData.title,
+      description: formData.description,
+      category: formData.category,
+      date: formData.date,
+      lat: formData.lat,
+      lng: formData.lng,
+      location: location, 
+    })
+    .select();
+
+  console.log("DATA:", data);
+  console.log("ERROR:", error);
+
+  if (error) return;
+
+  navigate("/events");
+}
+
 
   return (
     <div className="p-6 max-w-xl mx-auto">
@@ -92,9 +155,14 @@ console.log("ERROR:", error);
           <option value="gastronomia">Gastronomia</option>
         </select>
 
+        {errorMsg && (
+  <p className="text-red-600 font-medium">{errorMsg}</p>
+)}
         <Button variant="primary" size="md" type="submit">
           Guardar esdeveniment
         </Button>
+
+
       </form>
     </div>
   );
