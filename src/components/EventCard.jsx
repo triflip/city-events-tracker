@@ -53,7 +53,6 @@ export default function EventCard({ event, onDelete }) {
         </div>
 
         <div className="mt-4">
-          {/* 👉 ARA MOSTREM LA DATA FORMATEJADA */}
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
             {formattedDate} — {formattedTime}h
           </p>

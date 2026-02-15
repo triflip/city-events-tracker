@@ -17,6 +17,7 @@ export default function MapPage() {
   const markerRef = useRef(null);
   
   
+  
   useEffect(() => {
     async function loadEvents() {
       const { data, error } = await supabase.from("events").select("*");
