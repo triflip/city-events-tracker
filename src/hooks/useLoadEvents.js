@@ -18,7 +18,6 @@ export function useLoadEvents() {
 
         setEvents(data)
       } catch (err) {
-        console.log("SUPABASE ERROR:", err)
         setError(err)
       } finally {
         setLoading(false)

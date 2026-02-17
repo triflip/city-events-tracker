@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useState } from "react";
 
 const SearchContext = createContext();
 
@@ -15,6 +15,3 @@ export function SearchProvider({ children }) {
   );
 }
 
-export function useSearch() {
-  return useContext(SearchContext);
-}

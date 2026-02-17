@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabaseClient";
+import { useNavigate } from "react-router-dom";
 import Button from "./ui/Button";
 
 export default function EventCard({ event, onDelete }) {
@@ -28,6 +29,8 @@ export default function EventCard({ event, onDelete }) {
     hour: "2-digit",
     minute: "2-digit",
   });
+
+  const navigate = useNavigate();
 
   return (
     <div className="p-4 bg-white shadow rounded-xl hover:shadow-lg transition 
@@ -63,6 +66,7 @@ export default function EventCard({ event, onDelete }) {
             <Button
               variant="primary"
               size="sm"
+              onClick={() => navigate(`/events/${event.id}/edit`)}
             >
               Edit
             </Button>
