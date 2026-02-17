@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { AppRoutes } from "./routes/AppRoutes";
 import "leaflet/dist/leaflet.css";
 import "./index.css";
-import { SearchProvider } from "./context/SearchContext";
+import { SearchProvider } from "./context/SearchProvider";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

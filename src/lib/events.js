@@ -67,3 +67,15 @@ export async function fetchEvents() {
 
   return data;
 }
+
+export async function deleteEventById(id) {
+  const { error } = await supabase
+    .from("events")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    console.error("Error deleteEventById:", error);
+    throw error;
+  }
+}

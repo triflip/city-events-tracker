@@ -1,31 +1,26 @@
-import { useEffect, useState } from "react"
-import { supabase } from "../lib/supabaseClient"
+import { useEffect, useState } from "react";
+import { fetchEvents } from "../lib/events";
 
 export function useLoadEvents() {
-  const [events, setEvents] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function fetchEvents() {
+    async function load() {
       try {
-        const { data, error } = await supabase
-          .from("events")
-          .select("*")
-          .order("created_at", { ascending: false })
-
-        if (error) throw error
-
-        setEvents(data)
+        const data = await fetchEvents();
+        setEvents(data);
       } catch (err) {
-        setError(err)
+        console.error("Error carregant events:", err);
+        setError("No s'han pogut carregar els esdeveniments");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    fetchEvents()
-  }, [])
+    load();
+  }, []);
 
-  return { events, setEvents,  loading, error }
+  return { events, setEvents, loading, error };
 }
