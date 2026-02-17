@@ -52,3 +52,18 @@ export async function uploadEventImage(file) {
 
   return publicData.publicUrl;
 }
+
+
+export async function fetchEvents() {
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetchEvents:", error);
+    throw error;
+  }
+
+  return data;
+}
