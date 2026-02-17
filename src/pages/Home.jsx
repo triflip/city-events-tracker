@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useLoadEvents } from "../hooks/useLoadEvents";
 import { deleteEventById } from "../lib/events";
+import { useSearch } from "../hooks/useSearch";
+
 
 import {
   Table,
@@ -19,6 +21,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 export default function Home() {
   const { events, setEvents, loading, error } = useLoadEvents();
   const navigate = useNavigate();
+  const { filters } = useSearch();
+
 
   async function handleDelete(id) {
     if (!confirm("Segur que vols eliminar aquest esdeveniment?")) return;
@@ -34,6 +38,22 @@ export default function Home() {
   if (loading) return <p className="p-6">Carregant...</p>;
   if (error) return <p className="p-6 text-red-600">Error carregant events</p>;
 
+  const filteredEvents = events.filter(event => {
+  if (!filters.query) return true;
+
+  const q = filters.query.toLowerCase();
+  const fields = filters.fields || [];
+
+  return fields.some(field => {
+    const value = event[field];
+    if (!value) return false;
+    return String(value).toLowerCase().includes(q);
+  });
+});
+
+
+
+
   return (
     <div className="p-6 max-w-5xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Llista d'esdeveniments</h1>
@@ -42,6 +62,9 @@ export default function Home() {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell>
+                <strong>Imatge</strong>
+              </TableCell>
               <TableCell>
                 <strong>Títol</strong>
               </TableCell>
@@ -57,14 +80,11 @@ export default function Home() {
               <TableCell align="right">
                 <strong>Accions</strong>
               </TableCell>
-              <TableCell>
-                <strong>Imatge</strong>
-              </TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {events.map((ev) => (
+            {filteredEvents.map((ev) => (
               <TableRow key={ev.id}>
                 <TableCell>
                   <img

@@ -1,16 +1,16 @@
-import { Outlet } from "react-router-dom"
+import { Outlet } from "react-router-dom";
+import Navbar from "../components/ui/Navbar";
 
 export default function MainLayout() {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <header className="p-4 bg-white shadow">
-        <h1 className="text-xl font-bold">City Events Tracker</h1>
+        <Navbar />
       </header>
 
       <main className="p-6 flex-1">
         <Outlet />
       </main>
     </div>
-  )
+  );
 }
-
