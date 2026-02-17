@@ -1,17 +1,3 @@
-import { createContext, useState } from "react";
+import { createContext } from "react";
 
-const SearchContext = createContext();
-
-export function SearchProvider({ children }) {
-  const [filters, setFilters] = useState({
-    query: "",
-    fields: ["title", "description", "location"],
-  });
-
-  return (
-    <SearchContext.Provider value={{ filters, setFilters }}>
-      {children}
-    </SearchContext.Provider>
-  );
-}
-
+export const SearchContext = createContext();

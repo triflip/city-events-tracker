@@ -1,6 +1,6 @@
 import { useLoadEvents } from "../../hooks/useLoadEvents";
 import EventCard from "../../components/EventCard";
-import { useSearch } from "../../context/SearchContext";
+import { useSearch } from "../../hooks/useSearch";
 
 export default function EventList() {
   const { events, setEvents, loading, error } = useLoadEvents();
