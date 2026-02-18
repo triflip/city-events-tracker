@@ -7,7 +7,7 @@ export default function Navbar() {
   const [query, setQuery] = useState("");
 
   const navigate = useNavigate();
-  const { setFilters } = useSearch();
+  const { setFilters, clearFilters } = useSearch();
 
   function handleSearch() {
     setFilters({
@@ -16,7 +16,7 @@ export default function Navbar() {
     });
 
     setIsSearchOpen(false);
-    navigate("/events");
+    navigate("/");
   }
 
   return (
@@ -26,15 +26,24 @@ export default function Navbar() {
         {/* LEFT: LOGO */}
         <h1 
           className="text-xl font-bold cursor-pointer"
-          onClick={() => navigate("/")}
+          onClick={() => {
+            clearFilters();
+            navigate("/");
+          }}
         >
           City Events
         </h1>
 
         {/* CENTER: LINKS */}
         <div className="hidden md:flex gap-6 text-gray-700 font-medium">
-          <NavLink to="/" className="hover:text-blue-600">Home</NavLink>
-          <NavLink to="/events" className="hover:text-blue-600">Events</NavLink>
+          <NavLink 
+            to="/" 
+            className="hover:text-blue-600"
+            onClick={clearFilters}
+          >
+            Home
+          </NavLink>
+
           <NavLink to="/charts" className="hover:text-blue-600">Gràfics</NavLink>
           <NavLink to="/calendar" className="hover:text-blue-600">Calendari</NavLink>
           <NavLink to="/map" className="hover:text-blue-600">Mapa</NavLink>

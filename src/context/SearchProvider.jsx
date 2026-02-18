@@ -7,8 +7,15 @@ export function SearchProvider({ children }) {
     fields: ["title", "description", "location"],
   });
 
+  function clearFilters() {
+    setFilters({
+      query: "",
+      fields: ["title", "description", "location"],
+    });
+  }
+
   return (
-    <SearchContext.Provider value={{ filters, setFilters }}>
+    <SearchContext.Provider value={{ filters, setFilters, clearFilters }}>
       {children}
     </SearchContext.Provider>
   );
