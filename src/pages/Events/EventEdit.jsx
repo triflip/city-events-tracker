@@ -3,7 +3,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { updateEventById, uploadEventImage } from "./../../lib/events"
-import { useEvent } from "../../hooks/useEvent";
+import { useEvent } from "../../hooks/useEvents";
 
 export default function EventEdit() {
   const { id } = useParams();
