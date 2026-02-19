@@ -22,7 +22,7 @@ export default function Home() {
   if (loading) return <p className="p-6">Carregant...</p>;
   if (error) return <p className="p-6 text-red-600">Error carregant events</p>;
 
-  // Aplicar filtres
+  
   const filteredEvents = events.filter(event => {
     if (!filters.query) return true;
 
