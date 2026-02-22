@@ -1,8 +1,6 @@
-/* eslint-disable */
-
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { updateEventById, uploadEventImage } from "./../../lib/events"
+import { updateEventById, uploadEventImage } from "./../../lib/events";
 import { useEvent } from "../../hooks/useEvents";
 
 export default function EventEdit() {
@@ -16,11 +14,10 @@ export default function EventEdit() {
     location: "",
     category: "",
     imageUrl: "",
-    newImage: null
+    newImage: null,
   });
 
   const { event, loading, error } = useEvent(id);
-
 
   useEffect(() => {
     if (event) {
@@ -31,7 +28,7 @@ export default function EventEdit() {
         location: event.location || "",
         category: event.category || "",
         imageUrl: event.image_url || "",
-        newImage: null
+        newImage: null,
       });
     }
   }, [event]);
@@ -43,7 +40,6 @@ export default function EventEdit() {
     }
 
     let imageUrlToSave = form.imageUrl;
-
     if (form.newImage) {
       imageUrlToSave = await uploadEventImage(form.newImage);
     }
@@ -54,32 +50,26 @@ export default function EventEdit() {
       date: new Date(form.date).toISOString(),
       location: form.location.trim(),
       category: form.category.trim(),
-      image_url: imageUrlToSave
+      image_url: imageUrlToSave,
     };
 
     try {
       await updateEventById(id, updatedEvent);
-      navigate("/events");
-    } catch (error) {
-      console.error("Error actualitzant:", error);
+      navigate("/");
+    } catch (err) {
+      console.error("Error actualitzant:", err);
       alert("Hi ha hagut un error en guardar els canvis");
     }
   }
 
-  if (loading) {
-    return <p>Carregant dades...</p>;
-  }
-
-  if (error) {
-    return <p className="text-red-600">{error}</p>;
-  }
+  if (loading) return <p>Carregant dades...</p>;
+  if (error) return <p className="text-red-600">{error}</p>;
 
   return (
     <div className="p-6 max-w-xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">Editar esdeveniment</h1>
 
       <form className="flex flex-col gap-4 mt-4">
-
         <label className="flex flex-col">
           <span className="font-medium">Títol</span>
           <input
@@ -120,12 +110,18 @@ export default function EventEdit() {
 
         <label className="flex flex-col">
           <span className="font-medium">Categoria</span>
-          <input
-            type="text"
+          <select
             value={form.category}
             onChange={(e) => setForm({ ...form, category: e.target.value })}
             className="border p-2 rounded"
-          />
+          >
+            <option value="">Selecciona...</option>
+            <option value="concert">Concert</option>
+            <option value="expo">Exposició</option>
+            <option value="mercat">Mercat</option>
+            <option value="festa">Festa popular</option>
+            <option value="gastronomia">Gastronomia</option>
+          </select>
         </label>
 
         <label className="flex flex-col">
@@ -142,9 +138,7 @@ export default function EventEdit() {
           <input
             type="file"
             accept="image/*"
-            onChange={(e) =>
-              setForm({ ...form, newImage: e.target.files[0] })
-            }
+            onChange={(e) => setForm({ ...form, newImage: e.target.files[0] })}
             className="border p-2 rounded"
           />
         </label>

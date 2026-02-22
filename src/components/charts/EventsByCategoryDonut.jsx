@@ -4,7 +4,6 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function EventsByCategoryDonut({ events }) {
-  // Comptar quants events hi ha per categoria
   const categoryCounts = events.reduce((acc, ev) => {
     const cat = ev.category || "Sense categoria";
     acc[cat] = (acc[cat] || 0) + 1;

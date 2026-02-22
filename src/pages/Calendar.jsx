@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { es } from "date-fns/locale";
@@ -60,16 +60,19 @@ export default function CalendarPage() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const calendarEvents = useMemo(() =>
+    events.map((ev) => ({
+      title: ev.title,
+      start: new Date(ev.date),
+      end: new Date(ev.date),
+      description: ev.description,
+      image_url: ev.image_url,
+    })),
+    [events]
+  );
+
   if (loading) return <p className="p-6">Carregant esdeveniments...</p>;
   if (error) return <p className="p-6 text-red-600">Error carregant dades</p>;
-
-  const calendarEvents = events.map((ev) => ({
-    title: ev.title,
-    start: new Date(ev.date),
-    end: new Date(ev.date),
-    description: ev.description,
-    image_url: ev.image_url,
-  }));
 
   return (
     <div className="p-6">
@@ -93,13 +96,13 @@ export default function CalendarPage() {
           style={{ height: 500 }}
         />
       </div>
-      {isModalOpen && (
-  <EventModal
-    event={selectedEvent}
-    onClose={() => setIsModalOpen(false)}
-  />
-)}
 
+      {isModalOpen && (
+        <EventModal
+          event={selectedEvent}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

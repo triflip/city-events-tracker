@@ -14,7 +14,6 @@ export default function Navbar() {
       query,
       fields: ["title", "description", "location"],
     });
-
     setIsSearchOpen(false);
     navigate("/");
   }
@@ -22,28 +21,25 @@ export default function Navbar() {
   return (
     <>
       <nav className="flex items-center justify-between px-6 py-3 border-b bg-white shadow-sm">
-        
-        {/* LEFT: LOGO */}
-        <h1 
-          className="text-xl font-bold cursor-pointer"
+
+        <button
+          className="text-xl font-bold hover:text-blue-600"
           onClick={() => {
             clearFilters();
             navigate("/");
           }}
         >
           City Events
-        </h1>
+        </button>
 
-        {/* CENTER: LINKS */}
         <div className="hidden md:flex gap-6 text-gray-700 font-medium">
-          <NavLink 
-            to="/" 
+          <NavLink
+            to="/"
             className="hover:text-blue-600"
             onClick={clearFilters}
           >
             Home
           </NavLink>
-
           <NavLink to="/charts" className="hover:text-blue-600">Gràfics</NavLink>
           <NavLink to="/calendar" className="hover:text-blue-600">Calendari</NavLink>
           <NavLink to="/map" className="hover:text-blue-600">Mapa</NavLink>
@@ -66,8 +62,10 @@ export default function Navbar() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               placeholder="Escriu paraules clau..."
               className="w-full px-3 py-2 border border-gray-300 rounded mb-4"
+              autoFocus
             />
 
             <div className="flex justify-end gap-2">

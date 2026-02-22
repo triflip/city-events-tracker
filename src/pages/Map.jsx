@@ -1,21 +1,45 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
-
 import "leaflet/dist/leaflet.css";
-import "../hooks/leafletFix.js"; // 👈 AFEGIT: aplica el fix globalment
+import "../hooks/leafletFix.js";
 
-// 👇 ELIMINAT: tot el bloc de defaultIcon i L.Marker.prototype.options.icon
+const MAP_CENTER = [41.3851, 2.1734];
+
+function MapClickHandler({ isCreating, onMapClick }) {
+  useMapEvents({
+    click(e) {
+      if (!isCreating) return;
+      const { lat, lng } = e.latlng;
+      onMapClick([lat, lng]);
+    },
+  });
+  return null;
+}
+
+function AutoOpenPopup({ markerRef, children }) {
+  useEffect(() => {
+    if (markerRef.current) {
+      const timer = setTimeout(() => {
+        if (markerRef.current) {
+          markerRef.current.openPopup();
+        }
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [markerRef]);
+
+  return <Popup>{children}</Popup>;
+}
 
 export default function MapPage() {
   const [events, setEvents] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const center = [41.3851, 2.1734];
   const [newEventPosition, setNewEventPosition] = useState(null);
-  const navigate = useNavigate();
   const [isCreating, setIsCreating] = useState(false);
+  const navigate = useNavigate();
   const markerRef = useRef(null);
 
   useEffect(() => {
@@ -30,40 +54,15 @@ export default function MapPage() {
     loadEvents();
   }, []);
 
-  const filteredEvents =
+  const filteredEvents = useMemo(() =>
     selectedCategory === "all"
       ? events
-      : events.filter((event) => event.category === selectedCategory);
-
-  function MapClickHandler() {
-    useMapEvents({
-      click(e) {
-        if (!isCreating) return;
-        const { lat, lng } = e.latlng;
-        setNewEventPosition([lat, lng]);
-      },
-    });
-    return null;
-  }
-
-  function AutoOpenPopup({ markerRef, children }) {
-    useEffect(() => {
-      if (markerRef.current) {
-        const timer = setTimeout(() => {
-          if (markerRef.current) {
-            markerRef.current.openPopup();
-          }
-        }, 50);
-        return () => clearTimeout(timer);
-      }
-    }, [markerRef]);
-
-    return <Popup>{children}</Popup>;
-  }
+      : events.filter((event) => event.category === selectedCategory),
+    [events, selectedCategory]
+  );
 
   return (
     <div style={{ display: "flex", height: "80vh", width: "100%" }}>
-      {/* SIDEBAR */}
       <div
         className="sidebar-desktop"
         style={{
@@ -104,7 +103,7 @@ export default function MapPage() {
 
         <div style={{ height: "100%", width: "100%", marginTop: "10px" }}>
           <MapContainer
-            center={center}
+            center={MAP_CENTER}
             zoom={13}
             scrollWheelZoom={true}
             style={{ height: "100%", width: "100%" }}
@@ -114,21 +113,19 @@ export default function MapPage() {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            <MapClickHandler />
+            <MapClickHandler isCreating={isCreating} onMapClick={setNewEventPosition} />
 
             {newEventPosition && (
-              <Marker position={newEventPosition} ref={markerRef}> {/* 👈 eliminat icon={defaultIcon} */}
+              <Marker position={newEventPosition} ref={markerRef}>
                 <AutoOpenPopup markerRef={markerRef}>
                   <div className="flex flex-col gap-2">
                     <span>Crear esdeveniment aquí?</span>
                     <Button
                       variant="primary"
                       size="sm"
-                      onClick={() => {
-                        navigate(
-                          `/events/create?lat=${newEventPosition[0]}&lng=${newEventPosition[1]}`
-                        );
-                      }}
+                      onClick={() =>
+                        navigate(`/events/create?lat=${newEventPosition[0]}&lng=${newEventPosition[1]}`)
+                      }
                     >
                       Crear
                     </Button>
@@ -138,11 +135,7 @@ export default function MapPage() {
             )}
 
             {filteredEvents.map((event) => (
-              <Marker
-                key={event.id}
-                position={[event.lat, event.lng]}
-               
-              >
+              <Marker key={event.id} position={[event.lat, event.lng]}>
                 <Popup>{event.title}</Popup>
               </Marker>
             ))}

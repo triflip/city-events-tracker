@@ -9,16 +9,20 @@ export default function EventTableRow({ ev, onDelete }) {
   return (
     <TableRow>
       <TableCell>
-        <img
-          src={ev.image_url}
-          alt={ev.title}
-          style={{
-            width: "80px",
-            height: "60px",
-            objectFit: "cover",
-            borderRadius: "6px",
-          }}
-        />
+        {ev.image_url ? (
+          <img
+            src={ev.image_url}
+            alt={ev.title}
+            style={{
+              width: "80px",
+              height: "60px",
+              objectFit: "cover",
+              borderRadius: "6px",
+            }}
+          />
+        ) : (
+          <span className="text-gray-400 text-sm">Sense imatge</span>
+        )}
       </TableCell>
 
       <TableCell>{ev.title}</TableCell>
@@ -27,7 +31,7 @@ export default function EventTableRow({ ev, onDelete }) {
       <TableCell>{ev.location}</TableCell>
 
       <TableCell align="right">
-        <IconButton onClick={() => navigate(`/events/edit/${ev.id}`)}>
+        <IconButton onClick={() => navigate(`/events/${ev.id}/edit`)}>
           <EditIcon />
         </IconButton>
 
