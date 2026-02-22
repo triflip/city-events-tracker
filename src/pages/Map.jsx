@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "../lib/supabaseClient";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
-import { useRef } from "react";
 
+import "leaflet/dist/leaflet.css";
+import "../hooks/leafletFix.js"; // 👈 AFEGIT: aplica el fix globalment
+
+// 👇 ELIMINAT: tot el bloc de defaultIcon i L.Marker.prototype.options.icon
 
 export default function MapPage() {
   const [events, setEvents] = useState([]);
@@ -15,55 +17,49 @@ export default function MapPage() {
   const navigate = useNavigate();
   const [isCreating, setIsCreating] = useState(false);
   const markerRef = useRef(null);
-  
-  
-  
+
   useEffect(() => {
     async function loadEvents() {
       const { data, error } = await supabase.from("events").select("*");
-
       if (error) {
-          console.error("Error al carregar esdeveniments:", error);
-        } else {
-            setEvents(data);
+        console.error("Error al carregar esdeveniments:", error);
+      } else {
+        setEvents(data);
       }
     }
-
     loadEvents();
   }, []);
 
   const filteredEvents =
     selectedCategory === "all"
-    ? events
-    : events.filter((event) => event.category === selectedCategory);
-    
-    function MapClickHandler() {
-        useMapEvents({
-            click(e) {
-                if (!isCreating) return;
-                const { lat, lng } = e.latlng;
-                setNewEventPosition([lat, lng]);
-            },
-        });
-        return null;
-    }
-    
-  function AutoOpenPopup({ markerRef, position, children }) {
-  useEffect(() => {
-    if (markerRef.current) {
-      const timer = setTimeout(() => {
-        if (markerRef.current) {
-          markerRef.current.openPopup();
-        }
-      }, 50);
+      ? events
+      : events.filter((event) => event.category === selectedCategory);
 
-      return () => clearTimeout(timer);
-    }
-  }, [position, markerRef]); 
+  function MapClickHandler() {
+    useMapEvents({
+      click(e) {
+        if (!isCreating) return;
+        const { lat, lng } = e.latlng;
+        setNewEventPosition([lat, lng]);
+      },
+    });
+    return null;
+  }
 
-  return <Popup>{children}</Popup>;
-}
+  function AutoOpenPopup({ markerRef, children }) {
+    useEffect(() => {
+      if (markerRef.current) {
+        const timer = setTimeout(() => {
+          if (markerRef.current) {
+            markerRef.current.openPopup();
+          }
+        }, 50);
+        return () => clearTimeout(timer);
+      }
+    }, [markerRef]);
 
+    return <Popup>{children}</Popup>;
+  }
 
   return (
     <div style={{ display: "flex", height: "80vh", width: "100%" }}>
@@ -88,7 +84,7 @@ export default function MapPage() {
 
         {isCreating && (
           <p style={{ color: "#555" }}>
-            Clica al mapa per situar l’esdeveniment
+            Clica al mapa per situar l'esdeveniment
           </p>
         )}
       </div>
@@ -106,7 +102,6 @@ export default function MapPage() {
           <option value="gastronomia">Gastronomia</option>
         </select>
 
-        {/* MAPA */}
         <div style={{ height: "100%", width: "100%", marginTop: "10px" }}>
           <MapContainer
             center={center}
@@ -122,31 +117,32 @@ export default function MapPage() {
             <MapClickHandler />
 
             {newEventPosition && (
-  <Marker position={newEventPosition} ref={markerRef}>
-    <AutoOpenPopup markerRef={markerRef}>
-      <div className="flex flex-col gap-2">
-        <span>Crear esdeveniment aquí?</span>
-
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={() => {
-            navigate(
-              `/events/create?lat=${newEventPosition[0]}&lng=${newEventPosition[1]}`
-            );
-          }}
-        >
-          Crear
-        </Button>
-      </div>
-    </AutoOpenPopup>
-  </Marker>
-)}
-
-
+              <Marker position={newEventPosition} ref={markerRef}> {/* 👈 eliminat icon={defaultIcon} */}
+                <AutoOpenPopup markerRef={markerRef}>
+                  <div className="flex flex-col gap-2">
+                    <span>Crear esdeveniment aquí?</span>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={() => {
+                        navigate(
+                          `/events/create?lat=${newEventPosition[0]}&lng=${newEventPosition[1]}`
+                        );
+                      }}
+                    >
+                      Crear
+                    </Button>
+                  </div>
+                </AutoOpenPopup>
+              </Marker>
+            )}
 
             {filteredEvents.map((event) => (
-              <Marker key={event.id} position={[event.lat, event.lng]}>
+              <Marker
+                key={event.id}
+                position={[event.lat, event.lng]}
+               
+              >
                 <Popup>{event.title}</Popup>
               </Marker>
             ))}
