@@ -49,7 +49,6 @@ export default function Navbar() {
           <NavLink to="/map" className="hover:text-blue-600">Mapa</NavLink>
         </div>
 
-        {/* RIGHT: SEARCH BUTTON */}
         <button
           onClick={() => setIsSearchOpen(true)}
           className="p-2 rounded hover:bg-gray-100"
@@ -58,7 +57,6 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {/* SEARCH MODAL */}
       {isSearchOpen && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white p-4 rounded shadow-lg w-80">
