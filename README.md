@@ -1,16 +1,123 @@
-# React + Vite
+# City Event Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web application to explore, manage, and visualize urban events in Barcelona. Built as an academy project using React and Supabase.
 
-Currently, two official plugins are available:
+## 🚀 Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[city-events-tracker.vercel.app](https://city-events-tracker.vercel.app)
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 📋 Features
 
-## Expanding the ESLint configuration
+- **Event listing** — Browse all events in a sortable, paginated table
+- **Search** — Filter events by title, description, or location
+- **Create & Edit events** — Full form with image upload and automatic geolocation via Nominatim
+- **Interactive map** — View events on a Leaflet map and create new ones by clicking
+- **Calendar** — Visualize events in a monthly/weekly/daily calendar view
+- **Charts** — Donut chart showing event distribution by category
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🛠 Tech Stack
+
+| Category | Technology |
+|---|---|
+| Frontend | React 19, Vite 7 |
+| Styling | Tailwind CSS 4, MUI |
+| Routing | React Router v7 |
+| Map | Leaflet, React Leaflet |
+| Calendar | React Big Calendar |
+| Charts | Chart.js, React Chartjs 2 |
+| Backend | Supabase (PostgreSQL + Storage) |
+| Deploy | Vercel |
+| Testing | Vitest, Testing Library |
+
+---
+
+## ⚙️ Installation & Usage
+
+### Prerequisites
+
+- Node.js 18+
+- A [Supabase](https://supabase.com) project with an `events` table and `event-images` storage bucket
+
+### Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/triflip/city-events-tracker.git
+   cd city-events-tracker
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Create a `.env` file in the root with your Supabase credentials:
+   ```env
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
+
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+### Available Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build locally |
+| `npm test` | Run tests with Vitest |
+
+---
+
+## 🗄 Database
+
+The app uses a single Supabase table called `events` with the following fields:
+
+| Field | Type |
+|---|---|
+| id | uuid |
+| title | text |
+| description | text |
+| category | text |
+| date | timestamptz |
+| lat | float |
+| lng | float |
+| location | text |
+| image_url | text |
+| created_at | timestamptz |
+
+---
+
+## ☁️ Deploy
+
+The app is deployed on **Vercel** with automatic deployments on every push to the `main` branch.
+
+Environment variables (`VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`) must be configured in the Vercel project settings under **Settings → Environment Variables**.
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+├── assets/          # Static assets (logo, images)
+├── components/      # Reusable UI components
+│   ├── charts/
+│   ├── events/
+│   └── ui/
+├── context/         # React context (Search)
+├── hooks/           # Custom hooks
+├── layout/          # Page layout
+├── lib/             # Supabase client and API functions
+├── pages/           # Route pages
+├── routes/          # App routing
+└── testing/         # Unit and integration tests
+```
