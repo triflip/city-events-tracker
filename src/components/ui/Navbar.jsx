@@ -15,48 +15,37 @@ export default function Navbar() {
       fields: ["title", "description", "location"],
     });
     setIsSearchOpen(false);
+    setQuery("");
     navigate("/");
   }
 
+  const linkClass = ({ isActive }) =>
+    isActive
+      ? "text-white font-semibold border-b-2 border-white pb-0.5"
+      : "text-indigo-200 hover:text-white transition-colors";
+
   return (
     <>
-      <nav className="flex items-center justify-between px-6 py-3 border-b bg-white shadow-sm">
+      <nav className="flex items-center justify-end flex-1 h-full">
+       <div className="flex items-center gap-16 font-medium bg-indigo-600 h-3/4 px-30 rounded-full ml-auto mr-6">
+          <NavLink to="/" className={linkClass} onClick={clearFilters}>Home</NavLink>
+          <NavLink to="/charts" className={linkClass}>Gràfics</NavLink>
+          <NavLink to="/calendar" className={linkClass}>Calendari</NavLink>
+          <NavLink to="/map" className={linkClass}>Mapa</NavLink>
 
-        <button
-          className="text-xl font-bold hover:text-blue-600"
-          onClick={() => {
-            clearFilters();
-            navigate("/");
-          }}
-        >
-          City Events
-        </button>
-
-        <div className="hidden md:flex gap-6 text-gray-700 font-medium">
-          <NavLink
-            to="/"
-            className="hover:text-blue-600"
-            onClick={clearFilters}
+          <button
+            onClick={() => setIsSearchOpen(true)}
+            className="text-indigo-200 hover:text-white transition-colors text-lg"
           >
-            Home
-          </NavLink>
-          <NavLink to="/charts" className="hover:text-blue-600">Gràfics</NavLink>
-          <NavLink to="/calendar" className="hover:text-blue-600">Calendari</NavLink>
-          <NavLink to="/map" className="hover:text-blue-600">Mapa</NavLink>
+            🔍
+          </button>
         </div>
-
-        <button
-          onClick={() => setIsSearchOpen(true)}
-          className="p-2 rounded hover:bg-gray-100"
-        >
-          🔍
-        </button>
       </nav>
 
       {isSearchOpen && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white p-4 rounded shadow-lg w-80">
-            <h2 className="text-lg font-semibold mb-3">Cerca</h2>
+          <div className="bg-white p-6 rounded-xl shadow-xl w-96">
+            <h2 className="text-lg font-semibold mb-4 text-gray-800">Cerca esdeveniments</h2>
 
             <input
               type="text"
@@ -64,21 +53,20 @@ export default function Navbar() {
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               placeholder="Escriu paraules clau..."
-              className="w-full px-3 py-2 border border-gray-300 rounded mb-4"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               autoFocus
             />
 
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setIsSearchOpen(false)}
-                className="px-3 py-1 rounded border border-gray-300"
+                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors"
               >
                 Cancel·lar
               </button>
-
               <button
                 onClick={handleSearch}
-                className="px-3 py-1 rounded bg-blue-600 text-white"
+                className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
               >
                 Cerca
               </button>
